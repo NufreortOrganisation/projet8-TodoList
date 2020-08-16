@@ -23,7 +23,11 @@ class TaskController extends AbstractController
      */
     public function createAction(Request $request)
     {
+        $user = $this->getUser();
+
         $task = new Task();
+        $task->setCreatedBy($user);
+
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
@@ -83,6 +87,8 @@ class TaskController extends AbstractController
      */
     public function deleteTaskAction(Task $task)
     {
+        $this->denyAccessUnlessGranted('delete', $task);
+
         $em = $this->getDoctrine()->getManager();
         $em->remove($task);
         $em->flush();
