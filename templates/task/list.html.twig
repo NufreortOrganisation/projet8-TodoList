@@ -10,37 +10,42 @@
 
   <div class="row">
       {% for task in tasks %}
-      <div class="col-sm-4 col-lg-4 col-md-4" >
-          <div class="thumbnail">
+      <div class="col-sm-4 col-lg-4 col-md-4 mt-3 mb-3" >
+          <div class="card">
               <div class="caption" style="height: 250px;">
-                  <h4 class="pull-right">
-                      {% if task.isDone %}<span class="glyphicon glyphicon-ok"></span>{% else %}<span class="glyphicon glyphicon-remove"></span>{% endif %}
-                  </h4>
-                  <h4><a href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a></h4>
-                  <p class="text-danger font-weight-bold">Créée par :
-                      {% if task.createdBy.username is defined %}
-                          {{task.createdBy.username}}
-                      {% else %}
-                          {{"Anonymous"}}
-                      {% endif %}
-                  </p>
-                  <p>
-                    {% if task.startAt %}
-                        <span class="font-weight-bold">Début :</span> {{ task.startAt|format_datetime('short', 'none', locale='fr') }}
-                    {% else %}
-                        <span class="font-weight-bold">Début :</span> -
-                    {% endif %}
-                     /
-                    {% if task.endAt %}
-                        <span class="font-weight-bold">Fin :</span> {{ task.endAt|format_datetime('short', 'none', locale='fr') }}
-                    {% else %}
-                        <span class="font-weight-bold">Fin :</span> -
-                    {% endif %}
-                  </p>
+                  <div class="card-header">
+                      <h4 class="pull-right">
+                          {% if task.isDone %}<span class="glyphicon glyphicon-ok"></span>{% else %}<span class="glyphicon glyphicon-remove"></span>{% endif %}
+                      </h4>
+
+                      <h4><a href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a></h4>
+                  </div>
+                  <div class="card-body">
+                      <p class="text-danger font-weight-bold">Créée par :
+                          {% if task.createdBy.username is defined %}
+                              {{task.createdBy.username}}
+                          {% else %}
+                              {{"Anonymous"}}
+                          {% endif %}
+                      </p>
+                      <p>
+                        {% if task.startAt %}
+                            <span class="font-weight-bold">Début :</span> {{ task.startAt|format_datetime('short', 'none', locale='fr') }}
+                        {% else %}
+                            <span class="font-weight-bold">Début :</span> -
+                        {% endif %}
+                         /
+                        {% if task.endAt %}
+                            <span class="font-weight-bold">Fin :</span> {{ task.endAt|format_datetime('short', 'none', locale='fr') }}
+                        {% else %}
+                            <span class="font-weight-bold">Fin :</span> -
+                        {% endif %}
+                      </p>
                   <hr />
-                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{ 'modal' ~ task.id }}">
-                      Détails
-                  </button>
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{ 'modal' ~ task.id }}">
+                          Détails
+                      </button>
+                  </div>
 
                   <div class="modal fade" id="{{ 'modal' ~ task.id }}" tabindex="-1" role="dialog" aria-labelledby="{{ 'modal' ~ task.id }}" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -82,22 +87,23 @@
                       </div>
                     </div>
                   </div>
-
-              </div>
-              <div>
-                  <form action="{{ path('task_toggle', {'id' : task.id }) }}">
-                      <button class="btn btn-success btn-sm pull-right">
-                          {% if not task.isDone %}Marquer comme faite{% else %}Marquer non terminée{% endif %}
-                      </button>
-                  </form>
-                  {% if app.user == task.createdBy or app.user.roles.0 == 'ROLE_ADMIN' %}
-                      <form action="{{ path('task_delete', {'id' : task.id }) }}">
-                          <button class="btn btn-danger btn-sm pull-right">Supprimer</button>
-                      </form>
-                  {% endif %}
               </div>
           </div>
+          <div class="d-flex flex-row-reverse">
+              <form action="{{ path('task_toggle', {'id' : task.id }) }}">
+                  <button class="btn btn-success btn-sm pull-right">
+                      {% if not task.isDone %}Marquer comme faite{% else %}Marquer non terminée{% endif %}
+                  </button>
+              </form>
+              {% if app.user == task.createdBy or app.user.roles.0 == 'ROLE_ADMIN' %}
+                  <form action="{{ path('task_delete', {'id' : task.id }) }}">
+                      <button class="btn btn-danger btn-sm pull-right">Supprimer</button>
+                  </form>
+              {% endif %}
+          </div>
       </div>
+
+
       {% else %}
           <div class="alert alert-warning" role="alert">
               Il n'y a pas encore de tâche enregistrée. <a href="{{ path('task_create') }}" class="btn btn-warning pull-right">Créer une tâche</a>
