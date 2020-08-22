@@ -4,13 +4,16 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Traits\Timestampable;
 
 /**
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Table
  */
 class Task
 {
+    use Timestampable;
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -44,6 +47,16 @@ class Task
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tasks")
      */
     private $createdBy;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $startAt;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $endAt;
 
     public function __construct()
     {
@@ -104,6 +117,30 @@ class Task
     public function setCreatedBy(?User $createdBy): self
     {
         $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    public function getStartAt(): ?\DateTimeInterface
+    {
+        return $this->startAt;
+    }
+
+    public function setStartAt(?\DateTimeInterface $startAt): self
+    {
+        $this->startAt = $startAt;
+
+        return $this;
+    }
+
+    public function getEndAt(): ?\DateTimeInterface
+    {
+        return $this->endAt;
+    }
+
+    public function setEndAt(?\DateTimeInterface $endAt): self
+    {
+        $this->endAt = $endAt;
 
         return $this;
     }

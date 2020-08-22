@@ -8,14 +8,17 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Entity\Traits\Timestampable;
 
 /**
  * @ORM\Table("user")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  * @UniqueEntity("email")
  */
 class User implements UserInterface
 {
+    use Timestampable;
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
