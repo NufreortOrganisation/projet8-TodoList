@@ -38,38 +38,60 @@ class TaskTest extends KernelTestCase
         return $task;
     }
 
-    public function assertHasErrors(Task $task, int $number = 0)
-    {
+    public function assertHasErrors(Task $task, int $number = 0) {
         self::bootKernel();
-        $errors = self::$container->get('validator')->validate($task);
-      //  $messages = [];
-      //  foreach($errors as $error)
-      //  {
-      //      $messages[] = $error->getPropertyPath() . ' => ' .
-      //      $error->getMessage();
-      //  }
-        $this->assertCount($number, $errors);
+        $error = self::$container->get('validator')->validate($task);
+        $this->assertCount($number, $error);
     }
 
-    public function testGetNewTask()
-    {
+    public function testValidEntity() {
         $this->assertHasErrors($this->getNewTask(), 0);
     }
 
-    public function testinvalidBlankTaskTitle()
-    {
-      //dd($this->getNewTask());
-        $this->assertHasErrors($this->getNewTask()->setTitle(''), 1);
+    public function testGetTitle() {
+        $task = $this->getNewTask();
+        $task->setTitle('Titre test');
+        $taskTitle = $task->getTitle();
+
+        $this->assertSame('Titre test', $task->getTitle(), 0);
     }
 
-    public function testinvalidBlankTaskContent()
-    {
-        $this->assertHasErrors($this->getNewTask()->setContent(''), 1);
+    public function testGetContent() {
+        $task = $this->getNewTask();
+        $task->setContent('Contenu test');
+        $taskTitle = $task->getContent();
+
+        $this->assertSame('Contenu test', $task->getContent(), 0);
     }
 
-    public function testEntity(Task $task)
-    {
-        $taskToTest = $this->getNewTask();
-        $this->assertIsA($task, $taskToTest);
+    public function testGetCreatedAt() {
+        $task = $this->getNewTask();
+        $task->setCreatedAt('2020-08-05');
+        $taskTitle = $task->getCreatedAt();
+
+        $this->assertSame('2020-08-05', $task->getCreatedAt(), 0);
+    }
+
+    public function testGetCreatedBy() {
+        $task = $this->getNewTask();
+        $taskCreator = $task->getCreatedBy();
+
+        $this->assertInstanceOf(User::class, $taskCreator, 0);
+    }
+
+    public function testGetStartAt() {
+        $task = $this->getNewTask();
+        $task->setStartAt(date_create('2020-08-05 00:00:00'));
+        $taskTitle = $task->getStartAt();
+
+        $this->assertSame('2020-08-05 00:00:00', date_format($task->getStartAt(), 'Y-m-d H:i:s'), 0);
+    }
+
+    public function testGetEndAt() {
+        $task = $this->getNewTask();
+        $task->setEndAt(date_create('2020-08-05 00:00:00'));
+        $taskTitle = $task->getEndAt();
+
+        $this->assertSame('2020-08-05 00:00:00', date_format($task->getEndAt(), 'Y-m-d H:i:s'), 0);
     }
 }
