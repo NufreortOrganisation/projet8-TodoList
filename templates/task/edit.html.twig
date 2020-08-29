@@ -5,6 +5,7 @@
         {{ form_start(form, {'action' : path('task_edit', { 'id' : task.id })}) }}
             {{ form_widget(form) }}
 
+            <button type="button" class="btn btn-link"><a href="{{ path('task_list') }}" class="btn btn-primary">Retour à la liste des tâches</a></button>
             <button type="submit" class="btn btn-success pull-right">Modifier</button>
         {{ form_end(form) }}
     </div>
