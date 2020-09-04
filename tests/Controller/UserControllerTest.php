@@ -1,18 +1,13 @@
 <?php
 
-
 namespace App\Tests\Controller;
 
-use App\Entity\Task;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Goutte\Client;
-use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\HttpFoundation\Request;
-use Doctrine\Persistence\ObjectManager;
-use Doctrine\Persistence\ObjectRepository;
 
-class TaskControllerTest extends WebTestCase
+
+class UserControllerTest extends WebTestCase
 {
+
     private $client;
 
     public function setUp(): void
@@ -27,23 +22,25 @@ class TaskControllerTest extends WebTestCase
         $this->client->submit($form, ['_username' => 'Admin', '_password' => 'admin']);
     }
 
-    public function testListAction()
+    public function testUserListAction()
     {
         $this->loginUser();
-        $this->client->request('GET', '/tasks');
+        $this->client->request('GET', '/users');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testCreateAction()
+    public function testUserCreateAction()
     {
         $this->loginUser();
 
-        $crawler = $this->client->request('GET', '/tasks/create');
+        $crawler = $this->client->request('GET', '/users/create');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $form = $crawler->selectButton('Ajouter')->form();
-        $form['task[title]'] = 'letitre';
-        $form['task[content]'] = 'lecontenue';
+        $form['user[username]'] = 'autre';
+        $form['user[password][first]'] = 'autre';
+        $form['user[password][second]'] = 'autre';
+        $form['user[email]'] = 'autre@autre.org';
         $this->client->submit($form);
 
         $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
@@ -54,16 +51,18 @@ class TaskControllerTest extends WebTestCase
         $this->assertEquals(1, $crawler->filter('div.alert-success')->count());
     }
 
-    public function testModifyAction()
+    public function testUserUpdateAction()
     {
         $this->loginUser();
 
-        $crawler = $this->client->request('GET', "/tasks/43/edit");
+        $crawler = $this->client->request('GET', '/users/10/edit');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $form = $crawler->selectButton('Modifier')->form();
-        $form['task[title]'] = 'letitre';
-        $form['task[content]'] = 'lecontenue';
+        $form['user[username]'] = 'nouveau';
+        $form['user[password][first]'] = 'nouveau';
+        $form['user[password][second]'] = 'nouveau';
+        $form['user[email]'] = 'nouveau@nouveau.org';
         $this->client->submit($form);
 
         $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
@@ -74,26 +73,11 @@ class TaskControllerTest extends WebTestCase
         $this->assertEquals(1, $crawler->filter('div.alert-success')->count());
     }
 
-    public function testToggleTaskAction(): void
+    public function testUserDeleteAction()
     {
         $this->loginUser();
 
-        $this->client->request('GET', "/tasks/43/toggle");
-
-        $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
-
-        $crawler = $this->client->followRedirect();
-
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals(1, $crawler->filter('div.alert-success')->count());
-
-    }
-
-    public function testDeleteAction()
-    {
-        $this->loginUser();
-
-        $this->client->request('GET', "/tasks/43/delete");
+        $this->client->request('GET', "/users/10/delete");
 
         $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
 

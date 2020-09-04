@@ -93,6 +93,9 @@
     "egulias/email-validator": {
         "version": "2.1.19"
     },
+    "fabpot/goutte": {
+        "version": "v4.0.0"
+    },
     "laminas/laminas-zendframework-bridge": {
         "version": "1.1.0"
     },
